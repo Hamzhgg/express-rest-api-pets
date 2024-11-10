@@ -62,7 +62,16 @@ router.put('/:petId', async (req, res) => {
         const updatedPet = await Pet.findByIdAndIpdate(req.params.petId, req.body, {
             new: true 
         })
+        if (!updatedPet) {
+            res.status(404)
+            throw new Error('Pet not found')
+        }
         res.status(200).json(updatedPet)
+    } catch (error) {
+        if (res.statusCode === 404) {
+            res.json({ error: error.message })
+        }
+        res.status(500).json({ error: error.message })
         } 
 })
 
